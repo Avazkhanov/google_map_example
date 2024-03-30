@@ -12,8 +12,8 @@ class CategorySelect extends StatefulWidget {
 }
 
 class _CategorySelectState extends State<CategorySelect> {
-  int _activeIndex = -1;
   final List<String> _icons = [AppImages.home, AppImages.work, AppImages.other];
+  int _activeIndex = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +23,9 @@ class _CategorySelectState extends State<CategorySelect> {
         (index) => Material(
           color: Colors.transparent,
           child: Container(
-            margin: EdgeInsets.only(left: 30.w),
+            margin: EdgeInsets.only(left: 60.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.r),
+              borderRadius: BorderRadius.circular(10.r),
               color: Colors.white,
               border: _activeIndex == index
                   ? Border.all(
@@ -35,7 +35,7 @@ class _CategorySelectState extends State<CategorySelect> {
                   : null,
             ),
             child: InkWell(
-              borderRadius: BorderRadius.circular(15.r),
+              borderRadius: BorderRadius.circular(10.r),
               onTap: () {
                 setState(() {
                   _activeIndex = index;
@@ -43,8 +43,8 @@ class _CategorySelectState extends State<CategorySelect> {
                 });
               },
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-                child: Image.asset(_icons[index],height: 40.h,),
+                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+                child: Image.asset(_icons[index],height: 20.h,),
               ),
             ),
           ),

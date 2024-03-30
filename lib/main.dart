@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_map_example/screens/routes.dart';
-import 'package:google_map_example/screens/splash/splash_screen.dart';
+import 'package:google_map_example/view_models/home_view_model.dart';
 import 'package:google_map_example/view_models/location_view_model.dart';
 import 'package:google_map_example/view_models/map_view_model.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +13,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => MapViewModel()),
         ChangeNotifierProvider(create: (_)=> LocationViewModel()),
+        ChangeNotifierProvider(create: (_)=> HomeViewModel()),
       ],
       child: const MyApp(),
     ),

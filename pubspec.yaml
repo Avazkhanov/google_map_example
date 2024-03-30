@@ -23,6 +23,10 @@ dependencies:
   google_maps_flutter: ^2.6.0
   flutter_local_notifications: ^17.0.0
   flutter_timezone: ^1.0.4
+  sqflite: ^2.3.2
+  path_provider: ^2.1.2
+  lottie: ^3.1.0
+
 
 
 dev_dependencies:
@@ -42,6 +46,7 @@ flutter:
   assets:
 #    - assets/icons/
     - assets/images/
+    - assets/lottie/
 #    - assets/fonts/
 
     #  fonts:

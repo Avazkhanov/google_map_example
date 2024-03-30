@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_map_example/screens/google_map/widgets/category_select.dart';
-import 'package:google_map_example/screens/google_map/widgets/diolog.dart';
+import 'package:google_map_example/screens/google_map/widgets/add_place.dart';
 import 'package:google_map_example/screens/google_map/widgets/map_item.dart';
 import 'package:google_map_example/utils/images/app_images.dart';
 import 'package:google_map_example/view_models/map_view_model.dart';
@@ -10,12 +9,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class GoogleMapScreen extends StatelessWidget {
-  GoogleMapScreen({super.key});
-
-  late LatLng currentLatLng;
+ const GoogleMapScreen({super.key, required this.initialPosition});
+ final CameraPosition initialPosition;
 
   @override
   Widget build(BuildContext context) {
+    context.read<MapViewModel>();
     CameraPosition? cameraPosition;
     return Scaffold(
       body: Consumer<MapViewModel>(
@@ -26,6 +25,9 @@ class GoogleMapScreen extends StatelessWidget {
           return Stack(
             children: [
               GoogleMap(
+                onCameraMoveStarted: () {
+                  viewModel.cameraMove(true);
+                },
                 zoomControlsEnabled: false,
                 markers: viewModel.markers,
                 onCameraIdle: () {
@@ -33,11 +35,11 @@ class GoogleMapScreen extends StatelessWidget {
                     context
                         .read<MapViewModel>()
                         .changeCurrentLocation(cameraPosition!);
+                    viewModel.cameraMove(false);
                   }
                 },
                 onCameraMove: (CameraPosition currentCameraPosition) {
                   cameraPosition = currentCameraPosition;
-                  currentLatLng = currentCameraPosition.target;
                 },
                 mapType: viewModel.mapType,
                 initialCameraPosition: viewModel.initialCameraPosition!,
@@ -57,50 +59,42 @@ class GoogleMapScreen extends StatelessWidget {
                 right: 10.w,
                 child: const MapTypeItem(),
               ),
+              Positioned(
+                top: 150.h,
+                right: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10.r),
+                        bottomLeft: Radius.circular(10.r),
+                      )),
+                  child: IconButton(
+                    onPressed: () {
+                      context.read<MapViewModel>().moveToInitialPosition();
+                    },
+                    icon: Icon(
+                      CupertinoIcons.location_solid,
+                      size: 24.sp,
+                      color: Colors.amber,
+                    ),
+                  ),
+                ),
+              ),
+              viewModel.isScrolled
+                  ? SizedBox()
+                  : Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom),
+                        child: const AddPlace(),
+                      ),
+                    ),
             ],
           );
         },
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.,
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            shape: const OvalBorder(),
-            backgroundColor: Colors.white,
-            onPressed: () {
-              context.read<MapViewModel>().moveToInitialPosition();
-            },
-            child: const Icon(Icons.gps_fixed),
-          ),
-          SizedBox(height: 10.h),
-          Material(
-            color: Colors.transparent,
-            child: Ink(
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.white),
-              child: InkWell(
-                onTap: () {
-                  showCategoryDialog(context: context, position: currentLatLng);
-                },
-                borderRadius: BorderRadius.circular(50.r),
-                child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 15.h, vertical: 15.w),
-                  child: Icon(
-                    CupertinoIcons.location_solid,
-                    size: 24.sp,
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
     );
-  }
-
-  _showMapTypePopup() {
-    // show
   }
 }

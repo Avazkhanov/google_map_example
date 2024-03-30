@@ -48,7 +48,7 @@ class LocationViewModel extends ChangeNotifier{
 
   void listenCurrentLocation() {
     location.onLocationChanged.listen((event) {
-      debugPrint("lat ${event.latitude}");
+
     });
   }
 

@@ -2,11 +2,20 @@ import 'dart:async';
 import 'dart:ui'as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_map_example/utils/images/app_images.dart';
+import 'package:google_map_example/data/repositories/place_repository.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapViewModel extends ChangeNotifier{
   String icons = "";
+  String currentPlaceName = "";
+  bool isScrolled = false;
+
+
+
+  cameraMove(bool v){
+    isScrolled = v;
+    notifyListeners();
+  }
 
   final Completer<GoogleMapController> controller =
   Completer<GoogleMapController>();
@@ -44,8 +53,10 @@ class MapViewModel extends ChangeNotifier{
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
-  changeCurrentLocation(CameraPosition cameraPosition) {
+  changeCurrentLocation(CameraPosition cameraPosition) async {
     currentCameraPosition = cameraPosition;
+    currentPlaceName = await PlaceRepository.getPlaceName(cameraPosition.target);
+    notifyListeners();
   }
 
   addNewMarker({required LatLng position,required String title,required String snippet}) async {
