@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_map_example/data/models/place_category.dart';
 import 'package:google_map_example/screens/routes.dart';
 import 'package:google_map_example/utils/images/app_images.dart';
-import 'package:google_map_example/view_models/home_view_model.dart';
+import 'package:google_map_example/view_models/firebase_view_model.dart';
 import 'package:google_map_example/view_models/map_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -13,76 +12,82 @@ class AddressItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var provider = context.watch<HomeViewModel>();
+    var provider = context.watch<FireBaseViewModel>();
     return Expanded(
       child: ListView.separated(
         itemCount: provider.places.length,
         itemBuilder: (context, index) {
           var place = provider.places[index];
-          return Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    spreadRadius: 0,
-                    blurRadius: 12,
-                    offset: Offset(0, 12),
-                  ),
-                ]),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(15.r),
-                onTap: () {
-                  Provider.of<MapViewModel>(context, listen: false)
-                      .setLatInitialLong(place.latLng);
-                  context.read<HomeViewModel>().isEdit = true;
-                  // context.read<HomeViewModel>().index = place.id!;
-                  Navigator.pushNamed(context, RoutesNames.map,
-                      arguments:
-                          context.read<MapViewModel>().initialCameraPosition!);
-                },
-                child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 5.w, vertical: 10.h),
-                  child: Row(
-                    children: [
-                      Image.asset(place.placeCategory,
-                          height: 30.h, width: 30.w),
-                      SizedBox(width: 10.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+          return provider.getLoader
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 0,
+                          blurRadius: 12,
+                          offset: Offset(0, 12),
+                        ),
+                      ]),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15.r),
+                      onTap: () {
+                        Provider.of<MapViewModel>(context, listen: false)
+                            .setLatInitialLong(place.latLng);
+                        context.read<MapViewModel>().isEdit = true;
+                        context.read<MapViewModel>().placeModel = place;
+                        Navigator.pushNamed(context, RoutesNames.map,
+                            arguments: context
+                                .read<MapViewModel>()
+                                .initialCameraPosition!);
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 5.w, vertical: 10.h),
+                        child: Row(
                           children: [
-                            Text(
-                              getCategory(place.placeCategory),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18.sp),
+                            Image.asset(place.placeCategory,
+                                height: 30.h, width: 30.w),
+                            SizedBox(width: 10.w),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    getCategory(place.placeCategory),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.sp),
+                                  ),
+                                  SizedBox(height: 5.h),
+                                  Text(place.placeName),
+                                  SizedBox(height: 5.h),
+                                ],
+                              ),
                             ),
-                            SizedBox(height: 5.h),
-                            Text(place.placeName),
-                            SizedBox(height: 5.h),
+                            IconButton(
+                              onPressed: () {
+                                provider.deletePlace(place.docId!, context);
+                              },
+                              icon: Icon(
+                                Icons.cancel_outlined,
+                                color: Colors.red,
+                                size: 24.sp,
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          provider.deletePlace(place);
-                        },
-                        icon: Icon(
-                          Icons.cancel_outlined,
-                          color: Colors.red,
-                          size: 24.sp,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-          );
+                );
         },
         separatorBuilder: (BuildContext context, int index) {
           return SizedBox(height: 10.h);

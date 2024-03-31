@@ -2,7 +2,7 @@ import 'package:google_map_example/data/models/place_category.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PlaceModel {
-  final int? id;
+  final String? docId;
   LatLng latLng;
   final String placeName;
   final String placeCategory;
@@ -19,23 +19,36 @@ class PlaceModel {
     required this.flatNumber,
     required this.orientAddress,
     required this.stage,
-    this.id,
+    this.docId,
   });
 
   factory PlaceModel.fromJson(Map<String, dynamic> json) {
     return PlaceModel(
-      id: json['id'],
-      placeCategory: json['place_category'],
-      placeName: json['place_name'],
-      entrance: json['entrance'],
-      stage: json['stage'],
-      flatNumber: json['flat_number'],
-      orientAddress: json['orient_address'],
-      latLng: stringToLatLng(json['lat_lng']),
+      docId: json['doc_id'] as String? ?? "",
+      placeCategory: json['place_category'] as String? ?? "",
+      placeName: json['place_name'] as String? ?? "",
+      entrance: json['entrance'] as String? ?? "",
+      stage: json['stage'] as String? ?? "",
+      flatNumber: json['flat_number'] as String? ?? "",
+      orientAddress: json['orient_address'] as String? ?? "",
+      latLng: stringToLatLng(json['lat_Lng'] as String? ?? ""),
     );
   }
 
   Map<String, dynamic> toJson() {
+    return {
+      'doc_id': docId,
+      'place_category': placeCategory.toString(),
+      'place_name': placeName,
+      'entrance': entrance,
+      'stage': stage,
+      'flat_number': flatNumber,
+      'orient_address': orientAddress,
+      'lat_Lng': "${latLng.latitude},${latLng.longitude}"
+    };
+  }
+
+  Map<String, dynamic> toJsonForUpdate() {
     return {
       'place_category': placeCategory.toString(),
       'place_name': placeName,
@@ -48,7 +61,7 @@ class PlaceModel {
   }
 
   PlaceModel copyWith({
-    int? id,
+    String? id,
     String? placeCategory,
     String? placeName,
     String? entrance,
@@ -58,7 +71,7 @@ class PlaceModel {
     LatLng? latLng,
   }) {
     return PlaceModel(
-      id: id ?? this.id,
+      docId: id ?? docId,
       placeCategory: placeCategory ?? this.placeCategory,
       placeName: placeName ?? this.placeName,
       entrance: entrance ?? this.entrance,
@@ -71,12 +84,12 @@ class PlaceModel {
 }
 
 LatLng stringToLatLng(String v) {
+  if (v == "") return LatLng(41.311081, 69.240562);
   List<String> parts = v.split(',');
   double lat = double.parse(parts[0]);
   double lng = double.parse(parts[1]);
   return LatLng(lat, lng);
 }
-
 
 PlaceCategory categoryFromString(String value) {
   return PlaceCategory.values.firstWhere(

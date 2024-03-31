@@ -1,19 +1,26 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_map_example/screens/routes.dart';
-import 'package:google_map_example/view_models/home_view_model.dart';
+import 'package:google_map_example/services/firebase_options.dart';
+import 'package:google_map_example/view_models/firebase_view_model.dart';
 import 'package:google_map_example/view_models/location_view_model.dart';
 import 'package:google_map_example/view_models/map_view_model.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MapViewModel()),
         ChangeNotifierProvider(create: (_)=> LocationViewModel()),
-        ChangeNotifierProvider(create: (_)=> HomeViewModel()),
+        ChangeNotifierProvider(create: (_)=> FireBaseViewModel()),
+
+
       ],
       child: const MyApp(),
     ),

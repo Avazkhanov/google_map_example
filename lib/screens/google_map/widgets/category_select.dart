@@ -13,7 +13,7 @@ class CategorySelect extends StatefulWidget {
 
 class _CategorySelectState extends State<CategorySelect> {
   final List<String> _icons = [AppImages.home, AppImages.work, AppImages.other];
-  int _activeIndex = 2;
+  int _activeIndex = 0;
 
   @override
   Widget build(BuildContext context) {

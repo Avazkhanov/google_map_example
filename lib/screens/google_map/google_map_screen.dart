@@ -49,7 +49,7 @@ class GoogleMapScreen extends StatelessWidget {
               ),
               Align(
                 child: Image.asset(
-                  AppImages.other,
+                  AppImages.marker,
                   width: 50,
                   height: 50,
                 ),

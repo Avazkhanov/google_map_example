@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui'as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_map_example/data/models/place_model.dart';
 import 'package:google_map_example/data/repositories/place_repository.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -9,6 +10,8 @@ class MapViewModel extends ChangeNotifier{
   String icons = "";
   String currentPlaceName = "";
   bool isScrolled = false;
+  bool isEdit = false;
+  PlaceModel? placeModel;
 
 
 
