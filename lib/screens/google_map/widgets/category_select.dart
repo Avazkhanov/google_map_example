@@ -17,6 +17,7 @@ class _CategorySelectState extends State<CategorySelect> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<MapViewModel>().icons = _icons[_activeIndex];
     return Row(
       children: List.generate(
         _icons.length,
